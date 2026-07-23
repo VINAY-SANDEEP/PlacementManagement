@@ -36,8 +36,8 @@ export default function EditPlacement() {
       const res = await API.get(`/placements/${id}`);
       setForm({
         ...res.data,
-        eligibleBranches: Array.isArray(res.data.eligibleBranches) 
-          ? res.data.eligibleBranches.join(",") 
+        eligibleBranches: Array.isArray(res.data.eligibleBranches)
+          ? res.data.eligibleBranches.join(",")
           : res.data.eligibleBranches || ""
       });
     } catch (err) {
@@ -81,143 +81,168 @@ export default function EditPlacement() {
 
   if (fetching) {
     return (
-      <div className="min-h-screen bg-slate-900 text-slate-100 flex items-center justify-center">
-        <span className="text-sm font-semibold">Loading Drive details...</span>
+      <div className="min-h-screen bg-gray-50 text-gray-900 flex items-center justify-center">
+        <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-5 py-3 shadow-sm">
+          <span className="h-3 w-3 rounded-full bg-indigo-600 animate-pulse" />
+          <span className="text-sm font-medium text-gray-600">Loading drive details...</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col md:flex-row">
-      {/* Sidebar Nav */}
-      <aside className="w-full md:w-64 bg-slate-950 p-6 flex flex-col justify-between border-r border-slate-800 shrink-0">
-        <div className="space-y-8">
-          <div className="flex items-center gap-2">
-            <LayoutDashboard className="h-6 w-6 text-primary-500" />
-            <span className="font-bold text-lg text-white">Admin Console</span>
+    <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col md:flex-row">
+      {/* Sidebar */}
+      <aside className="w-full md:w-64 bg-white border-r border-gray-200 flex flex-col justify-between shrink-0">
+        <div>
+          <div className="px-6 py-5 border-b border-gray-200">
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 rounded-lg bg-indigo-600 flex items-center justify-center shadow-sm">
+                <LayoutDashboard className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <span className="font-semibold text-sm text-gray-900 block">Admin Console</span>
+                <span className="text-[11px] text-gray-500 font-medium">Placement Management</span>
+              </div>
+            </div>
           </div>
-          <nav className="space-y-1.5">
-            <Link to="/dashboard" className="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-slate-900 text-slate-400 hover:text-white transition">
-              Overview
-            </Link>
-            <Link to="/placements-admin" className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900 text-primary-400 font-semibold transition">
-              Placements List
-            </Link>
+
+          <nav className="p-4 space-y-6">
+            <div>
+              <p className="px-3 text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Main Menu</p>
+              <div className="space-y-1">
+                <Link
+                  to="/dashboard"
+                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-medium text-sm transition-all"
+                >
+                  <span>Overview</span>
+                </Link>
+                <Link
+                  to="/placements-admin"
+                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-indigo-50 text-indigo-700 font-medium text-sm border border-indigo-100 transition-all"
+                >
+                  <span>Placements List</span>
+                </Link>
+              </div>
+            </div>
           </nav>
         </div>
-        <div className="pt-6 border-t border-slate-800">
-          <Link to="/placements-admin" className="w-full flex items-center justify-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold transition">
+
+        <div className="p-4 border-t border-gray-200">
+          <Link
+            to="/placements-admin"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg text-sm font-medium transition shadow-sm"
+          >
             <ArrowLeft className="h-4 w-4" />
             Back to List
           </Link>
         </div>
       </aside>
 
-      {/* Edit Form Area */}
+      {/* Main Content */}
       <main className="flex-1 p-6 md:p-10 space-y-8 overflow-y-auto">
-        <header className="pb-6 border-b border-slate-850">
-          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-            <Save className="h-6 w-6 text-primary-500" />
-            Edit Placement Drive
-          </h1>
-          <p className="text-slate-400 text-xs mt-1">Modify details for {form.companyName}</p>
+        <header className="pb-6 border-b border-gray-200">
+          <div className="flex items-center gap-2 text-gray-900">
+            <Save className="h-5 w-5 text-indigo-600" />
+            <h1 className="text-2xl font-bold tracking-tight">Edit Placement Drive</h1>
+          </div>
+          <p className="text-gray-500 text-sm mt-1">Modify details for {form.companyName || "this drive"}.</p>
         </header>
 
-        <form onSubmit={update} className="max-w-4xl space-y-6">
-          <div className="glass p-6 md:p-8 rounded-2xl border border-white/5 shadow-md space-y-6">
-            
-            {/* Row 1: Company details */}
+        <form onSubmit={update} className="max-w-5xl space-y-6">
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 md:p-8 space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-350">Company Name *</label>
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Company Name *</label>
                 <input
                   type="text"
                   name="companyName"
                   required
                   value={form.companyName}
                   onChange={change}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white placeholder-slate-500 focus:border-primary-500 outline-none text-sm transition"
+                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-350">Eligible Branches *</label>
+
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Eligible Branches *</label>
                 <input
                   type="text"
                   name="eligibleBranches"
                   required
                   value={form.eligibleBranches}
                   onChange={change}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white placeholder-slate-500 focus:border-primary-500 outline-none text-sm transition"
+                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition"
                 />
               </div>
             </div>
 
-            {/* Row 2: Campus Type & CTC */}
             <div className="grid md:grid-cols-3 gap-6">
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-350">Campus Type</label>
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Campus Type</label>
                 <select
                   name="campusType"
                   value={form.campusType}
                   onChange={change}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white focus:border-primary-500 outline-none text-sm transition"
+                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition"
                 >
-                  <option className="bg-slate-900">On Campus</option>
-                  <option className="bg-slate-900">Off Campus</option>
+                  <option>On Campus</option>
+                  <option>Off Campus</option>
                 </select>
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-350">CTC Package</label>
+
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">CTC Package</label>
                 <input
                   type="text"
                   name="ctc"
                   value={form.ctc}
                   onChange={change}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white focus:border-primary-500 outline-none text-sm transition"
+                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-350">Expected Exam Date</label>
+
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Expected Exam Date</label>
                 <input
                   type="date"
                   name="expectedExamDate"
                   value={form.expectedExamDate ? form.expectedExamDate.substring(0, 10) : ""}
                   onChange={change}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white focus:border-primary-500 outline-none text-sm transition"
+                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition"
                 />
               </div>
             </div>
 
-            {/* Row 3: Eligibility & description */}
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-350">Eligibility Criteria *</label>
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Eligibility Criteria *</label>
                 <textarea
                   name="eligibilityCriteria"
                   required
                   value={form.eligibilityCriteria}
                   rows="4"
                   onChange={change}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white placeholder-slate-500 focus:border-primary-500 outline-none text-sm transition resize-none"
+                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition resize-none"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-350">Job Description</label>
+
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Job Description</label>
                 <textarea
                   name="jobDescription"
                   value={form.jobDescription}
                   rows="4"
                   onChange={change}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white placeholder-slate-500 focus:border-primary-500 outline-none text-sm transition resize-none"
+                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition resize-none"
                 />
               </div>
             </div>
 
-            {/* Row 4: URLs */}
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-350 flex items-center gap-1">
-                  <Globe className="h-3.5 w-3.5 text-blue-400" />
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500 flex items-center gap-1">
+                  <Globe className="h-3.5 w-3.5 text-indigo-600" />
                   Application Form URL
                 </label>
                 <input
@@ -225,12 +250,13 @@ export default function EditPlacement() {
                   name="formLink"
                   value={form.formLink}
                   onChange={change}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white focus:border-primary-500 outline-none text-sm transition"
+                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-350 flex items-center gap-1">
-                  <Globe className="h-3.5 w-3.5 text-emerald-400" />
+
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500 flex items-center gap-1">
+                  <Globe className="h-3.5 w-3.5 text-emerald-600" />
                   Survey / Registry URL
                 </label>
                 <input
@@ -238,72 +264,65 @@ export default function EditPlacement() {
                   name="surveyLink"
                   value={form.surveyLink}
                   onChange={change}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white focus:border-primary-500 outline-none text-sm transition"
+                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition"
                 />
               </div>
             </div>
 
-            {/* Row 5: File update uploads */}
-            <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-slate-800">
+            <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-gray-200">
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-350">
-                  Update Logo (Leaves existing if empty)
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Update Logo</label>
+                <label className="flex flex-col items-center justify-center border border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 px-4 py-6 rounded-lg cursor-pointer transition">
+                  <Upload className="h-6 w-6 text-gray-400 mb-2" />
+                  <span className="text-xs text-gray-500">
+                    {companyLogo ? companyLogo.name : "Select image file"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setCompanyLogo(e.target.files[0])}
+                    className="hidden"
+                  />
                 </label>
-                <div className="flex items-center gap-4">
-                  <label className="flex-1 flex flex-col items-center justify-center border border-dashed border-slate-700 bg-slate-950/20 hover:bg-slate-950/45 px-4 py-6 rounded-xl cursor-pointer transition">
-                    <Upload className="h-6 w-6 text-slate-500 mb-2" />
-                    <span className="text-xs text-slate-400">
-                      {companyLogo ? companyLogo.name : "Select Image logo"}
-                    </span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setCompanyLogo(e.target.files[0])}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
+                <p className="text-[11px] text-gray-400">Leave empty to keep the existing logo.</p>
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-350">
-                  Update PDF Document (Leaves existing if empty)
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Update PDF Document</label>
+                <label className="flex flex-col items-center justify-center border border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 px-4 py-6 rounded-lg cursor-pointer transition">
+                  <FileText className="h-6 w-6 text-gray-400 mb-2" />
+                  <span className="text-xs text-gray-500">
+                    {pdf ? pdf.name : "Select PDF document"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e) => setPdf(e.target.files[0])}
+                    className="hidden"
+                  />
                 </label>
-                <div className="flex items-center gap-4">
-                  <label className="flex-1 flex flex-col items-center justify-center border border-dashed border-slate-700 bg-slate-950/20 hover:bg-slate-950/45 px-4 py-6 rounded-xl cursor-pointer transition">
-                    <FileText className="h-6 w-6 text-slate-500 mb-2" />
-                    <span className="text-xs text-slate-400">
-                      {pdf ? pdf.name : "Select PDF document"}
-                    </span>
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      onChange={(e) => setPdf(e.target.files[0])}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
+                <p className="text-[11px] text-gray-400">Leave empty to keep the existing PDF.</p>
               </div>
             </div>
-
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition disabled:opacity-50"
+              className="flex-1 inline-flex items-center justify-center gap-2 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
             >
-              {loading ? "Saving file uploads..." : "Save Modifications"}
+              <Save className="h-4 w-4" />
+              {loading ? "Saving changes..." : "Save Changes"}
             </button>
+
             <Link
               to="/placements-admin"
-              className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition"
+              className="px-6 py-3 rounded-lg bg-white hover:bg-gray-50 text-gray-700 font-medium text-sm border border-gray-300 transition text-center"
             >
               Cancel
             </Link>
           </div>
-
         </form>
       </main>
     </div>

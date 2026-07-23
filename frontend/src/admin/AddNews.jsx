@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../services/api";
-import { LayoutDashboard, ArrowLeft, Plus, Newspaper } from "lucide-react";
+import {
+  LayoutDashboard,
+  ArrowLeft,
+  Newspaper,
+  Save,
+} from "lucide-react";
 import { useToast } from "../App";
 
 export default function AddNews() {
@@ -11,7 +16,9 @@ export default function AddNews() {
     priority: "Medium",
     publishDate: "",
   });
+
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const { showToast } = useToast();
 
@@ -24,134 +31,232 @@ export default function AddNews() {
 
   const submit = async (e) => {
     e.preventDefault();
+
     if (!form.title || !form.description) {
-      showToast("Please fill all required announcement details", "warning");
+      showToast("Please fill all required fields", "warning");
       return;
     }
 
     setLoading(true);
+
     try {
       await API.post("/news", form);
-      showToast("Announcement notice broadcasted successfully", "success");
+
+      showToast("News published successfully", "success");
+
       navigate("/dashboard");
     } catch (err) {
-      console.error(err);
-      showToast("Failed to broadcast news notice", "error");
+      console.log(err);
+      showToast("Failed to publish news", "error");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col md:flex-row">
-      {/* Sidebar Nav */}
-      <aside className="w-full md:w-64 bg-slate-950 p-6 flex flex-col justify-between border-r border-slate-800 shrink-0">
-        <div className="space-y-8">
+    <div className="min-h-screen bg-gray-100 flex">
+
+      {/* Sidebar */}
+
+      <aside className="w-64 bg-white border-r shadow-sm hidden md:flex flex-col">
+
+        <div className="px-6 py-6 border-b">
           <div className="flex items-center gap-2">
-            <LayoutDashboard className="h-6 w-6 text-primary-500" />
-            <span className="font-bold text-lg text-white">Admin Console</span>
+            <LayoutDashboard className="text-blue-600" />
+            <h2 className="font-bold text-xl text-gray-800">
+              Admin Panel
+            </h2>
           </div>
-          <nav className="space-y-1.5">
-            <Link to="/dashboard" className="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-slate-900 text-slate-400 hover:text-white transition">
-              Overview
-            </Link>
-          </nav>
         </div>
-        <div className="pt-6 border-t border-slate-800">
-          <Link to="/dashboard" className="w-full flex items-center justify-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold transition">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Dashboard
+
+        <nav className="flex-1 p-5 space-y-2">
+
+          <Link
+            to="/dashboard"
+            className="block px-4 py-3 rounded-lg hover:bg-gray-100 text-gray-700 font-medium"
+          >
+            Dashboard
           </Link>
+
+          <Link
+            to="/dashboard"
+            className="block px-4 py-3 rounded-lg bg-blue-50 text-blue-700 font-semibold"
+          >
+            Add News
+          </Link>
+
+        </nav>
+
+        <div className="p-5 border-t">
+
+          <Link
+            to="/dashboard"
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-lg border border-gray-300 hover:bg-gray-100 font-medium"
+          >
+            <ArrowLeft size={18} />
+            Back
+          </Link>
+
         </div>
+
       </aside>
 
-      {/* Main Work Area */}
-      <main className="flex-1 p-6 md:p-10 space-y-8 overflow-y-auto">
-        <header className="pb-6 border-b border-slate-850">
-          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-            <Newspaper className="h-6 w-6 text-amber-505" />
-            Add News notice
-          </h1>
-          <p className="text-slate-400 text-xs mt-1">Configure announcement broadcast message and set priorities</p>
-        </header>
+      {/* Content */}
 
-        <form onSubmit={submit} className="max-w-3xl space-y-6">
-          <div className="glass p-6 md:p-8 rounded-2xl border border-white/5 shadow-md space-y-6">
-            
-            {/* Input fields */}
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-350">Notice Title *</label>
+      <div className="flex-1">
+
+        {/* Header */}
+
+        <div className="bg-white border-b px-10 py-6">
+
+          <div className="flex items-center gap-3">
+
+            <div className="bg-blue-100 p-3 rounded-lg">
+              <Newspaper className="text-blue-600" />
+            </div>
+
+            <div>
+
+              <h1 className="text-3xl font-bold text-gray-800">
+                Create News Notice
+              </h1>
+
+              <p className="text-gray-500 mt-1">
+                Publish announcements and important notices for students.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* Form */}
+
+        <div className="p-10">
+
+          <form
+            onSubmit={submit}
+            className="bg-white rounded-xl shadow-sm border p-8 max-w-4xl"
+          >
+
+            <h2 className="text-xl font-semibold text-gray-800 mb-8">
+              Announcement Information
+            </h2>
+
+            {/* Title */}
+
+            <div className="mb-6">
+
+              <label className="block mb-2 font-medium text-gray-700">
+                Notice Title
+              </label>
+
               <input
                 type="text"
                 name="title"
-                required
-                placeholder="e.g. Schedule for Mid-Term Exams Autumn 2026"
                 value={form.title}
                 onChange={change}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white placeholder-slate-500 focus:border-amber-500 outline-none text-sm transition"
+                placeholder="Enter notice title"
+                className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                required
               />
+
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-350">Priority Level</label>
+            {/* Row */}
+
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+
+              <div>
+
+                <label className="block mb-2 font-medium text-gray-700">
+                  Priority
+                </label>
+
                 <select
                   name="priority"
                   value={form.priority}
                   onChange={change}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white focus:border-amber-500 outline-none text-sm transition"
+                  className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
                 >
-                  <option className="bg-slate-900">High</option>
-                  <option className="bg-slate-900">Medium</option>
-                  <option className="bg-slate-900">Low</option>
+                  <option>High</option>
+                  <option>Medium</option>
+                  <option>Low</option>
                 </select>
+
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-350">Publish Date</label>
+              <div>
+
+                <label className="block mb-2 font-medium text-gray-700">
+                  Publish Date
+                </label>
+
                 <input
                   type="date"
                   name="publishDate"
                   value={form.publishDate}
                   onChange={change}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white focus:border-amber-500 outline-none text-sm transition"
+                  className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
+
               </div>
+
             </div>
 
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-350">Announcement Details *</label>
+            {/* Description */}
+
+            <div className="mb-8">
+
+              <label className="block mb-2 font-medium text-gray-700">
+                Description
+              </label>
+
               <textarea
+                rows={7}
                 name="description"
-                required
-                placeholder="Provide detailed description regarding deadlines, reference PDFs, rules..."
-                rows="5"
                 value={form.description}
                 onChange={change}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800 text-white placeholder-slate-500 focus:border-amber-500 outline-none text-sm transition resize-none"
+                placeholder="Enter complete announcement..."
+                className="w-full border rounded-lg px-4 py-3 resize-none focus:ring-2 focus:ring-blue-500 outline-none"
+                required
               />
+
             </div>
 
-          </div>
+            {/* Buttons */}
 
-          <div className="flex gap-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm transition disabled:opacity-50"
-            >
-              {loading ? "Publishing Broadcast..." : "Publish Broadcast Notice"}
-            </button>
-            <Link
-              to="/dashboard"
-              className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition"
-            >
-              Cancel
-            </Link>
-          </div>
+            <div className="flex justify-end gap-4">
 
-        </form>
-      </main>
+              <Link
+                to="/dashboard"
+                className="px-6 py-3 rounded-lg border border-gray-300 hover:bg-gray-100 font-medium"
+              >
+                Cancel
+              </Link>
+
+              <button
+                disabled={loading}
+                type="submit"
+                className="flex items-center gap-2 px-7 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold disabled:opacity-50"
+              >
+                <Save size={18} />
+
+                {loading
+                  ? "Publishing..."
+                  : "Publish Notice"}
+
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }
