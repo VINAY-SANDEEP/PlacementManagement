@@ -4,7 +4,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import { Briefcase, FileText, Newspaper, Search, ArrowRight, Calendar, Users, Award, GraduationCap } from "lucide-react";
 
-const API = "http://localhost:5000/api";
+const API = "https://placementmanagement.onrender.com/api";
 
 export default function Home({ darkMode, setDarkMode }) {
   const [placements, setPlacements] = useState([]);
