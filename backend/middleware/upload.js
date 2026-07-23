@@ -5,11 +5,11 @@ const cloudinary = require("../config/cloudinary");
 const storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
-
     if (file.mimetype === "application/pdf") {
       return {
         folder: "CampusPortal/PDFs",
         resource_type: "raw",
+        format: "pdf", // Cloudinary needs raw formats specified explicitly
       };
     }
 
